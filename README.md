@@ -9,6 +9,8 @@ Compilation
 With only golang installed:
 
 ```shell
+$ git clone https://github.com/mycroft/eth-generator
+$ cd eth-generator
 $ go get -d -v
 $ go build
 $ ./eth-generator -h
@@ -31,7 +33,7 @@ Usage
 -----
 
 ```shell
-./eth-generator -db-name testaroo -db-host 172.17.0.2 -db-user testaroo -db-pass testaroo -num 3 -debug
+$ ./eth-generator -db-name testaroo -db-host 172.17.0.2 -db-user testaroo -db-pass testaroo -num 3 -debug
 2018/03/27 19:07:37 Storing using testaroo:testaroo@tcp(172.17.0.2)/testaroo
 2018/03/27 19:07:37 Priv: 70d881253b6387b34862bb6a546534a0b29b6bc5c96e69a3d700726eaa25e578
 2018/03/27 19:07:37 Pub:  0x3ec9abeab297df036fa6ae51d5603d7c81345a48
@@ -70,9 +72,6 @@ $ ./eth-generator -debug -num 2
 
 With ethereum
 -------------
-
-### Using geth (shell)
-
 
 ### Using geth console
 

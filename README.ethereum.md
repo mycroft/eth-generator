@@ -59,7 +59,7 @@ INFO [03-27|19:29:58] Persisted trie from memory database      nodes=1 size=201.
 INFO [03-27|19:29:58] Successfully wrote genesis state         database=lightchaindata                      hash=72d4f9…36f0d3
 ```
 
-Your chain is ready. Next step: Launch the geth console
+Your chain is ready. Next step: Launch the geth console:
 
 ```shell
 $ geth --datadir ./test-chain init genesis.json
@@ -117,7 +117,7 @@ INFO [03-27|19:38:26] Submitted transaction                    fullhash=0x3c7eca
 "0x3c7eca7d19cf3830779ff8c0de5ddd0d11015a8e388c4b950f747074e54b0bab"
 ```
 
-At this moment, as there are no miner, the transaction is in pending state waiting to be mined and balance is not spent yet. Mine a little more:
+At this moment, as there are no miner, the transaction is in pending state waiting to be mined and balance is not spent yet. Mine a little more and you'll reciever those 10 coins:
 
 ```js
 > web3.fromWei(eth.getBalance("0x94e15d9d909bbe88e8c0959e3baa211cea3ac68c"), "ether")
@@ -153,7 +153,7 @@ We have to import the private key of `0x76e669fd985997bcf7d31c4ae639be2081f428ea
 "0x76e669fd985997bcf7d31c4ae639be2081f428ea"
 ```
 
-We can now send our money (don't forget to mine again)
+We can now send our money (don't forget to unlock the account using password (mine: ''), and to mine at least one block again):
 
 ```js
 > web3.personal.unlockAccount(sender, '', 15000);
@@ -177,3 +177,5 @@ And check our final balances:
 0.499622
 > 
 ```
+
+That's it! :)
