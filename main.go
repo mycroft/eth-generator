@@ -8,8 +8,11 @@ import (
 	"fmt"
 	"log"
 
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	// "database/sql"
+	// _ "github.com/go-sql-driver/mysql"
+
+	"github.com/ziutek/mymysql/mysql"
+	_ "github.com/ziutek/mymysql/native" // Native engine
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/ethereum/go-ethereum/crypto/sha3"
@@ -43,14 +46,9 @@ func Keccak256(in []byte) []byte {
 	return hash.Sum(nil)
 }
 
-func DbConnect() *sql.DB {
-	connectString := fmt.Sprintf("%s:%s@tcp(%s)/%s", dbUser, dbPass, dbHost, dbName)
-
-	if debug {
-		log.Printf("Storing using %s", connectString)
-	}
-
-	db, err := sql.Open("mysql", connectString)
+func DbConnect() mysql.Conn {
+	db := mysql.New("tcp", "", fmt.Sprintf("%s:3306", dbHost), dbUser, dbPass, dbName)
+	err := db.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +56,7 @@ func DbConnect() *sql.DB {
 	return db
 }
 
-func Store(db *sql.DB, pub, priv string) bool {
+func Store(db mysql.Conn, pub, priv string) bool {
 	// Table used:
 	// CREATE TABLE ethkeys(
 	//   id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -71,18 +69,13 @@ func Store(db *sql.DB, pub, priv string) bool {
 		log.Fatal(err)
 	}
 
-	res, err := stmt.Exec(pub, priv)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	lastId, err := res.LastInsertId()
+	res, err := stmt.Run(pub, priv)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if debug {
-		log.Printf("Record: %d\n", lastId)
+		log.Printf("Record: %d\n", res.InsertId())
 	}
 
 	return true
@@ -101,7 +94,7 @@ func Prepend(in []byte, size int) []byte {
 func main() {
 	flag.Parse()
 
-	var db *sql.DB
+	var db mysql.Conn
 
 	if dbName != "" {
 		db = DbConnect()
