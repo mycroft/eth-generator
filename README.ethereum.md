@@ -9,7 +9,6 @@ First, make sure `golang` is installed:
 $ sudo apt-get install golang-go
 ```
 
-
 First, get `go-ethereum` & build it. You'll need only the `geth` binary:
 
 ```shell
