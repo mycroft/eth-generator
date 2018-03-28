@@ -9,7 +9,7 @@ Compilation
 Make sure `golang` is installed:
 
 ```shell
-$ sudo apt-get install golang
+$ sudo apt-get install golang-go
 ```
 
 Then, install `eth-generator` wherever you want on the filesystem:

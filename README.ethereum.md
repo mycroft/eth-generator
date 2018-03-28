@@ -6,7 +6,7 @@ Ethereum single node testing
 First, make sure `golang` is installed:
 
 ```shell
-$ sudo apt-get install golang
+$ sudo apt-get install golang-go
 ```
 
 
