@@ -6,7 +6,13 @@ A ethereum key generator and importer in MySQL/Mariadb database
 Compilation
 -----------
 
-With only golang installed:
+Make sure `golang` is installed:
+
+```shell
+$ sudo apt-get install golang
+```
+
+Then, install `eth-generator` wherever you want on the filesystem:
 
 ```shell
 $ git clone https://github.com/mycroft/eth-generator

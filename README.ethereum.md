@@ -3,7 +3,12 @@ Ethereum single node testing
 
 ## Compilation
 
-You'll need `golang` installed.
+First, make sure `golang` is installed:
+
+```shell
+$ sudo apt-get install golang
+```
+
 
 First, get `go-ethereum` & build it. You'll need only the `geth` binary:
 
@@ -23,7 +28,7 @@ total 270512
 
 ## Setup a new chain
 
-To setup a new chain for private testing, you'll need a `genesis.json` file, like this one:
+To setup a new chain for private testing, you'll need a `genesis.json` file, like this one; As we are going to work in `/tmp`, I suggest to put the following contents into `/tmp/genesis.json`:
 
 ```json
 {
@@ -41,7 +46,7 @@ To setup a new chain for private testing, you'll need a `genesis.json` file, lik
 }
 ```
 
-Write this into genesis.json, and create your own blockchain:
+Once you wrote `genesis.json`, use `geth` to create your own blockchain (we are going to use an alias for `geth` pointing to `/tmp/go-ethereum/build/bin/geth`):
 
 ```shell
 $ cd /tmp
@@ -59,7 +64,7 @@ INFO [03-27|19:29:58] Persisted trie from memory database      nodes=1 size=201.
 INFO [03-27|19:29:58] Successfully wrote genesis state         database=lightchaindata                      hash=72d4f9…36f0d3
 ```
 
-Your chain is ready. Next step: Launch the geth console:
+Your chain is ready. Next step: Launch the `geth`'sdaemon with `console`:
 
 ```shell
 $ geth --datadir ./test-chain init genesis.json
