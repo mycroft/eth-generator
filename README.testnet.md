@@ -43,7 +43,7 @@ Just launch `geth` with the `--testnet` flag:
 $ cd /tmp
 $ alias geth=/tmp/go-ethereum/build/bin/geth
 $ mkdir testnet
-$ geth --testnet --datadir ./testnet
+$ geth --testnet --datadir ./testnet console
 INFO [03-28|06:45:03] Maximum peer count                       ETH=25 LES=0 total=25
 INFO [03-28|06:45:03] Starting peer-to-peer node               instance=Geth/v1.8.3-unstable-b1917ac9/linux-amd64/go1.10
 INFO [03-28|06:45:03] Allocated cache and file handles         database=/home/mycroft/dev/eth-generator/my-ethereum/testnet/geth/chaindata cache=768 handles=512
