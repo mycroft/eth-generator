@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	// "database/sql"
 	// _ "github.com/go-sql-driver/mysql"
@@ -24,6 +25,7 @@ var (
 	dbHost         string
 	dbUser, dbPass string
 	dbName         string
+	file           string
 )
 
 func init() {
@@ -33,6 +35,7 @@ func init() {
 	flag.StringVar(&dbUser, "db-user", "", "DB User")
 	flag.StringVar(&dbPass, "db-pass", "", "DB Pass")
 	flag.IntVar(&num, "num", 1, "Num of keys to generate")
+	flag.StringVar(&file, "file", "", "File for export")
 }
 
 func GenerateKey() (*ecdsa.PrivateKey, error) {
@@ -95,10 +98,20 @@ func main() {
 	flag.Parse()
 
 	var db mysql.Conn
+	var fd *os.File
+	var err error
 
 	if dbName != "" {
 		db = DbConnect()
 		defer db.Close()
+	}
+
+	if file != "" {
+		fd, err = os.OpenFile(file, os.O_RDWR|os.O_CREATE, 0600)
+		if err != nil {
+			log.Panic(err)
+		}
+		defer fd.Close()
 	}
 
 	for i := 0; i < num; i++ {
@@ -120,6 +133,10 @@ func main() {
 		if debug {
 			log.Printf("Priv: %x\n", privatekey)
 			log.Printf("Pub:  0x%x\n", hash[12:])
+		}
+
+		if fd != nil {
+			fd.WriteString(fmt.Sprintf("0x%x;%x\n", hash[12:], privatekey))
 		}
 
 		if dbName != "" {
