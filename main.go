@@ -107,7 +107,7 @@ func main() {
 	}
 
 	if file != "" {
-		fd, err = os.OpenFile(file, os.O_RDWR|os.O_CREATE, 0600)
+		fd, err = os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
 			log.Panic(err)
 		}
