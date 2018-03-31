@@ -57,6 +57,9 @@ var (
 	fDebug                 bool
 	file                   string
 	fInit, fWatch, fStatus bool
+	fApiUrl                string
+	fFile                  string
+	fRefresh               bool
 )
 
 func init() {
@@ -66,6 +69,7 @@ func init() {
 	flag.BoolVar(&fWatch, "watch", false, "Search for transactions for existing addresses")
 	flag.BoolVar(&fInit, "init", false, "DB Init")
 	flag.BoolVar(&fStatus, "status", false, "Show key statuses")
+	flag.BoolVar(&fRefresh, "refresh", false, "Refresh data from database")
 }
 
 func GenerateKey() (*ecdsa.PrivateKey, error) {
@@ -93,7 +97,6 @@ func CreateTable(db mysql.Conn) error {
 	query := `CREATE TABLE ethkeys(
 			    id INT NOT NULL AUTO_INCREMENT,
 			    pub CHAR(40) NOT NULL,
-			    priv CHAR(64) NOT NULL,
 			    used BOOL NOT NULL DEFAULT false,
 			    completed BOOL NOT NULL DEFAULT false,
 			    tx_metadata TEXT,
@@ -118,7 +121,7 @@ func CreateTable(db mysql.Conn) error {
 				gas TEXT,
 				gas_price TEXT,
 				hash VARCHAR(66) UNIQUE NOT NULL,
-				timestamp UNSIGNED INT,
+				timestamp INT UNSIGNED,
 				transaction_index INT,
 				to_addr TEXT,
 				value TEXT,
@@ -134,17 +137,17 @@ func CreateTable(db mysql.Conn) error {
 	return nil
 }
 
-func Store(db mysql.Conn, pub, priv string) error {
+func Store(db mysql.Conn, pub string) error {
 	if fDebug {
-		log.Printf("DB Store: %s %s\n", pub, priv)
+		log.Printf("DB Store: %s\n", pub)
 	}
 
-	stmt, err := db.Prepare("INSERT INTO ethkeys(pub, priv) VALUES(?, ?)")
+	stmt, err := db.Prepare("INSERT INTO ethkeys(pub) VALUES(?)")
 	if err != nil {
 		return err
 	}
 
-	res, err := stmt.Run(pub, priv)
+	res, err := stmt.Run(pub)
 	if err != nil {
 		return err
 	}
@@ -261,7 +264,8 @@ func QueryEtherscan(addr string) (big.Int, error) {
 	var out big.Int
 
 	url := fmt.Sprintf(
-		"https://api.etherscan.io/api?module=account&action=balance&address=0x%s&tag=latest",
+		"https://%s/api?module=account&action=balance&address=0x%s&tag=latest",
+		fApiUrl,
 		addr,
 	)
 
@@ -295,7 +299,8 @@ func QueryEtherscanTX(addr string) ([]TX, error) {
 	var txs TXResp
 
 	url := fmt.Sprintf(
-		"https://api.etherscan.io/api?module=account&action=txlist&address=0x%s&startblock=0&endblock=99999999&sort=asc",
+		"https://%s/api?module=account&action=txlist&address=0x%s&startblock=0&endblock=99999999&sort=asc",
+		fApiUrl,
 		addr,
 	)
 
@@ -339,7 +344,13 @@ func Watch(db mysql.Conn) error {
 		log.Println("Watch()")
 	}
 
-	rows, _, err := db.Query("SELECT pub, received FROM ethkeys WHERE tx_value > received AND NOW() < started_ts + INTERVAL 1 DAY AND completed = false AND received < tx_value;")
+	query := "SELECT pub, received FROM ethkeys WHERE tx_value > received AND NOW() < started_ts + INTERVAL 1 DAY AND completed = false AND received < tx_value;"
+
+	if fRefresh {
+		query = "SELECT pub, received FROM ethkeys WHERE used = true and completed = false;"
+	}
+
+	rows, _, err := db.Query(query)
 	if err != nil {
 		return err
 	}
@@ -367,7 +378,7 @@ func Watch(db mysql.Conn) error {
 
 		}
 
-		if value.Cmp(&current_received) != 0 {
+		if value.Cmp(&current_received) != 0 || fRefresh {
 			if fDebug {
 				log.Printf("Storing new received value (%s) in database.\n", value.Text(10))
 			}
@@ -444,6 +455,20 @@ func main() {
 
 	if fDebug {
 		log.Printf("Key pool size is %d.\n", pool_num)
+	}
+
+	fApiUrl = cfg.Section("general").Key("api_url").MustString("api-ropsten.etherscan.io")
+
+	if fDebug {
+		log.Printf("Using API url: %s\n", fApiUrl)
+	}
+
+	if file == "" {
+		file = cfg.Section("general").Key("file").MustString("./private-keys")
+	}
+
+	if fDebug {
+		log.Printf("Using file: %s\n", file)
 	}
 
 	is_disabled := cfg.Section("db").Key("disabled").MustBool(false)
@@ -533,7 +558,7 @@ func main() {
 		}
 
 		if db != nil {
-			Store(db, fmt.Sprintf("%x", hash[12:]), fmt.Sprintf("%x", privatekey))
+			Store(db, fmt.Sprintf("%x", hash[12:]))
 		}
 	}
 }
