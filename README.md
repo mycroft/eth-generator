@@ -128,13 +128,13 @@ $
 
 ## Watch for transactions
 
-By default, eth-generator will not watch for transactions if transaction is:
+By default, `eth-generator` will not watch for transactions if transaction is:
 * not used (used = false in database);
 * started_ts < NOW() - 24h (it will start to watch only on addresses that were asked to be looked the last 24h, no more, to avoid to query too long the API.);
 * completed (completed = true in database);
 * received >= tx_value (won't watch any more if balance is bigger than waited value).
 
-Therefore, the upstream app must inform eth-generator to watch for transaction using the following query, updating `used`, `tx_value` and `started_ts` fields:
+Therefore, the `upstream app` must inform `eth-generator` to watch for transaction using the following query, updating `used`, `tx_value` and `started_ts` fields:
 
 ```sql
 MariaDB [mysql]> update ethkeys set used = true, tx_value = 147004910000000, started_ts = NOW() where pub = 'CE3A0be91053acfd3Eb71de4df4423416e978F50';
@@ -165,7 +165,12 @@ $ ./eth-generator -debug
 $
 ```
 
-Running the watcher is easy. Just use the `-watch` flag:
+The watcher will, for each addresses that must be watched:
+* Query the API to check for `balance`;
+* If `balance` differs that the one in database, it will store the new `balance`;
+* It will query the API to retrieve all transactions associated to this address, and store them in database. Once in database, those transactions are no longer used by `eth-generator`.
+
+To run the watcher, just use the `-watch` flag:
 
 ```shell
 $ ./eth-generator -debug -watch
@@ -206,7 +211,7 @@ $ ./eth-generator -debug -watch
 $
 ```
 
-And in DB, transactions will be stored:
+And in DB, transactions will be stored (the database schema for this table can be found at the end of this page):
 
 ```mysql
 MariaDB [mysql]> select hash, from_addr, value from ethtx where to_addr = '0xCE3A0be91053acfd3Eb71de4df4423416e978F50';
