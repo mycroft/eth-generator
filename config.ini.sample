@@ -1,0 +1,16 @@
+[general]
+debug = false
+
+[keys]
+# Number of keys in pool
+num = 3
+
+[db]
+# Set true to disable DB
+# disabled = true
+
+# DB Configuration
+host = 172.17.0.2
+name = mysql
+user = root
+pass = pass
