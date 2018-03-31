@@ -3,6 +3,7 @@ debug = false
 # For test net, use instead:
 # api_url = api-ropsten.etherscan.io or http://api-kovan.etherscan.io or api-rinkeby.etherscan.io
 api_url = api.etherscan.io
+file = ./private-keys
 
 [keys]
 # Number of keys in pool
