@@ -137,7 +137,7 @@ By default, eth-generator will not watch for transactions if transaction is:
 Therefore, the upstream app must inform eth-generator to watch for transaction using the following query, updating `used`, `tx_value` and `started_ts` fields:
 
 ```sql
-MariaDB [mysql]> update ethkeys set used = true, tx_value = 1000000000000000000, started_ts = NOW() where pub = 'CE3A0be91053acfd3Eb71de4df4423416e978F50';
+MariaDB [mysql]> update ethkeys set used = true, tx_value = 147004910000000, started_ts = NOW() where pub = 'CE3A0be91053acfd3Eb71de4df4423416e978F50';
 Query OK, 1 row affected (0.01 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 ```
@@ -147,7 +147,7 @@ Status will then show:
 ```shell
 $ ./eth-generator -status
 2018/03/31 08:42:14 id:1 0x39d5b09767129129f3d4f82871e37e416688d503 used:false waited:0 received:0 
-2018/03/31 08:42:14 id:2 0xCE3A0be91053acfd3Eb71de4df4423416e978F50 used:true waited:1000000000000000000 received:0 started_ts:'2018-03-31 06:42:13'
+2018/03/31 08:42:14 id:2 0xCE3A0be91053acfd3Eb71de4df4423416e978F50 used:true waited:147004910000000 received:0 started_ts:'2018-03-31 06:42:13'
 2018/03/31 08:42:14 id:3 0xfbfe44c6f9a060112d61b047fc70ab13904cc1d9 used:false waited:0 received:0 
 $
 ```
