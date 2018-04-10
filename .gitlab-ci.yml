@@ -8,6 +8,7 @@ build:
     stage: build
     image: golang:1.10.1
     before_script:
+        - apt update
         - apt install -y devscripts build-essential lintian
     script:
         - go build -o tree/usr/bin/$BUILD_NAME
