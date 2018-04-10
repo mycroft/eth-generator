@@ -12,7 +12,7 @@ build:
         - apt install -y devscripts build-essential lintian
     script:
         - go get -d -v
-        - go build -o tree/usr/bin/$BUILD_NAME
+        - go build -o tree/usr/bin/$CI_PROJECT_NAME
         - mkdir -p tree/usr/share/$CI_PROJECT_NAME
         - cp config.ini.sample tree/usr/share/$CI_PROJECT_NAME/config.ini.sample
         - debuild -uc -us -i -b
