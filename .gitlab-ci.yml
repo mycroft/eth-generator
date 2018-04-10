@@ -6,7 +6,7 @@ stages:
 
 build:
     stage: build
-    image: golang:1.10.1
+    image: registry.mkz.me/mycroft/build-image-golang
     before_script:
         - apt update
         - apt install -y devscripts build-essential lintian
