@@ -16,9 +16,8 @@ build:
         - mkdir -p tree/usr/share/$CI_PROJECT_NAME
         - cp config.ini.sample tree/usr/share/$CI_PROJECT_NAME/config.ini.sample
         - debuild -uc -us -i -b
-        - ls -l
-        - ls -l ..
+        - mv ../*deb .
     artifacts:
         name: $BUILD_NAME
         paths:
-            - ../*deb
+            - ./*deb
