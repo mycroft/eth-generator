@@ -15,7 +15,7 @@ build:
         - go build -o tree/usr/bin/$BUILD_NAME
         - mkdir -p tree/usr/share/$CI_PROJECT_NAME
         - cp config.ini.sample tree/usr/share/$CI_PROJECT_NAME/config.ini.sample
-        - debuild -uc -us
+        - debuild -uc -us -i -b
         - ls -l
         - ls -l ..
     artifacts:
