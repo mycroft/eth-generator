@@ -1,0 +1,20 @@
+variables:
+    BUILD_NAME: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID
+
+stages:
+    - build
+
+build:
+    stage: build
+    image: golang:1.10.1
+    before_script:
+        - apt install -y devscripts build-essential lintian
+    script:
+        - go build -o tree/usr/bin/$BUILD_NAME
+        - mkdir -p tree/usr/share/$CI_PROJECT_NAME
+        - cp config.ini.sample tree/usr/share/$CI_PROJECT_NAME/config.ini.sample
+        - debuild -uc -us
+    artifacts:
+        name: $BUILD_NAME
+        paths:
+            - $BUILD_NAME

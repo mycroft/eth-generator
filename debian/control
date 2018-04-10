@@ -1,0 +1,13 @@
+Source: eth-generator
+Section: universe/misc
+Priority: optional
+Maintainer: mycroft <mycroft@syndevio.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://syndevio.com/
+
+Package: eth-generator
+Architecture: amd64
+Depends: ${misc:Depends}
+Description: Ethereum keys generator
+  Ethereum keys generator
