@@ -21,4 +21,4 @@ build:
     artifacts:
         name: $BUILD_NAME
         paths:
-            - $BUILD_NAME
+            - ../*deb
