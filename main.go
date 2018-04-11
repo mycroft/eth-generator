@@ -64,7 +64,7 @@ var (
 
 func init() {
 	flag.BoolVar(&fDebug, "debug", false, "Debug mode")
-	flag.StringVar(&fConfigFile, "config", "/etc/config.ini", "Configuration file")
+	flag.StringVar(&fConfigFile, "config", "/etc/eth-generator/config.ini", "Configuration file")
 	flag.StringVar(&file, "file", "", "File for export")
 	flag.BoolVar(&fWatch, "watch", false, "Search for transactions for existing addresses")
 	flag.BoolVar(&fInit, "init", false, "DB Init")
